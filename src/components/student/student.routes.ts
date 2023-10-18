@@ -1,5 +1,5 @@
 import { Router } from 'express';
-// import authorization from '../../utils/auth';
+import authorization from '../../utils/auth';
 import StudentController from './student.controller';
 
 class StudentRoute {
@@ -17,22 +17,21 @@ class StudentRoute {
 		this.router.post('/signup', this.studentController.createStudents);
 
 		// List Users
-		this.router.get('/', this.studentController.getStudents);
+		this.router.get('/',authorization, this.studentController.getStudents);
         
-        //find User By Id
-		this.router.get('/:id', this.studentController.findStudent);
+		this.router.get('/me',authorization, this.studentController.findStudent);
 
 		// Update User
 		this.router.patch(
-			'/update/:id',
-			// authorization,
+			'/update/me',
+			authorization,
 			this.studentController.updateStudent,
 		);
 
 		// Delete User
 		this.router.delete(
-			'/delete/:id',
-			// authorization,
+			'/delete/me',
+			authorization,
 			this.studentController.deleteStudent,
 		);
 
@@ -41,8 +40,8 @@ class StudentRoute {
 
 		// Logout User
 		this.router.put(
-			'/logout/:id',
-			// authorization,
+			'/logout/me',
+			authorization,
 			this.studentController.logoutStudent,
 		);
 	}

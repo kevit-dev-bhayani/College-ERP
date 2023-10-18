@@ -1,5 +1,5 @@
 import { Router } from 'express';
-// import authorization from '../../utils/auth';
+import authorization from '../../utils/auth';
 import StaffController from './staff.controller';
 
 class StaffRoute {
@@ -17,22 +17,23 @@ class StaffRoute {
 		this.router.post('/signup', this.staffController.createStaff);
 
 		// List Users
-		this.router.get('/', this.staffController.getStaff);
+		this.router.get('/', authorization,this.staffController.getStaff);
         
         //find User By Id
-		this.router.get('/:id', this.staffController.findStaff);
+		this.router.get('/me',authorization, this.staffController.findStaff);
+
 
 		// Update User
 		this.router.patch(
-			'/update/:id',
-			// authorization,
+			'/update/me',
+			authorization,
 			this.staffController.updateStaff,
 		);
 
 		// Delete User
 		this.router.delete(
-			'/delete/:id',
-			// authorization,
+			'/delete/me',
+			authorization,
 			this.staffController.deleteStaff,
 		);
 
@@ -41,8 +42,8 @@ class StaffRoute {
 
 		// Logout User
 		this.router.put(
-			'/logout/:id',
-			// authorization,
+			'/logout/me',
+			authorization,
 			this.staffController.logoutStaff,
 		);
 	}

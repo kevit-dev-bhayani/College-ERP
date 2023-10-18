@@ -26,7 +26,7 @@ export async function createNewStaff(userBody) {
 export async function findStaffById(_id) {
 	try {
 		// console.log(_id);
-		return await Staff.findOne({ _id });
+		return await Staff.findById({ _id });
 	} catch (err) {
 		throw new HttpException(
 			500,

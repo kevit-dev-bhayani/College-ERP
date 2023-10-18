@@ -18,6 +18,7 @@ import {
 	deleteStaffById,
 	// findStaff ByDepartmentId,
 } from './staff.DAL';
+// import { request } from 'http';
 
 
 class StaffController {
@@ -66,7 +67,8 @@ class StaffController {
 	 */
 	async findStaff(req, res, next) {
 		try {
-			const staff = await findStaffById (req.params.id);
+			const staff = await findStaffById (req.id);
+			// console.log(staff);
             if(staff){
                 return res.status(200).send({ data: staff });
             }
@@ -85,7 +87,7 @@ class StaffController {
 	async updateStaff(req, res, next) {
 		try {
 			// const { id } = req.id;
-			const staff = await findStaffById (req.params.id);
+			const staff = await findStaffById (req.id);
 			if (!staff) {
 				return next(
 					new HttpException(
@@ -133,7 +135,7 @@ class StaffController {
 	async deleteStaff(req, res, next) {
 		try {
 			// const { id } = req.id;
-			const staff = await findStaffById (req.params.id);
+			const staff = await findStaffById (req.id);
 			if (!staff) {
 				return next(
 					new HttpException(
@@ -144,7 +146,7 @@ class StaffController {
 					),
 				);
 			}
-			await deleteStaffById(req.params.id);
+			await deleteStaffById(req.id);
 			// const staffs = await findStaff ByDepartmentInit(req.department_init);
 			// if (staffs.length === 0) {
 			// 	const department = await findStaff ByDepartmentInit(req.department_id);
@@ -166,7 +168,7 @@ class StaffController {
 		try {
 			// const { id } = req.id;
 			// console.log(id);
-			const staff = await findStaffById (req.params.id);
+			const staff = await findStaffById (req.id);
 			if (!staff) {
 				return next(
 					new HttpException(
@@ -214,10 +216,10 @@ class StaffController {
           const privateKey = fs.readFileSync(
             join(__dirname, '../../../keys/Private.key'),
           );
-          const token = jwt.sign(
+          const token =await jwt.sign(
             { id: staff.id, phone_no: staff.phone_no, department_id: staff.department_init },
             privateKey,
-            { algorithm: 'RS256' },
+            { algorithm: 'RS256' }
           );
           staff.authToken = token;
           await staff.save();

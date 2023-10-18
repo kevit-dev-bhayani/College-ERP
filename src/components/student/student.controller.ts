@@ -38,7 +38,7 @@ class StudentsController {
 				studentObject.department_id = department._id;
 			}
 			const student = await createNewStudent(studentObject);
-			return res.status(200).send({ data: student });
+			return res.status(201).send({ data: student });
 		} catch (err) {
 			return next(err);
 		}
@@ -66,7 +66,7 @@ class StudentsController {
 	 */
 	async findStudent(req, res, next) {
 		try {
-			const student = await findStudentById(req.params.id);
+			const student = await findStudentById(req.id);
             if(student){
                 return res.status(200).send({ data: student });
             }
@@ -85,7 +85,7 @@ class StudentsController {
 	async updateStudent(req, res, next) {
 		try {
 			// const { id } = req.id;
-			const student = await findStudentById(req.params.id);
+			const student = await findStudentById(req.id);
 			if (!student) {
 				return next(
 					new HttpException(
@@ -133,7 +133,7 @@ class StudentsController {
 	async deleteStudent(req, res, next) {
 		try {
 			// const { id } = req.id;
-			const student = await findStudentById(req.params.id);
+			const student = await findStudentById(req.id);
 			if (!student) {
 				return next(
 					new HttpException(
@@ -144,7 +144,7 @@ class StudentsController {
 					),
 				);
 			}
-			await deleteStudentById(req.params.id);
+			await deleteStudentById(req.id);
 			// const students = await findStudentsByDepartmentInit(req.department_init);
 			// if (students.length === 0) {
 			// 	const department = await findStudentsByDepartmentInit(req.department_id);
@@ -166,7 +166,7 @@ class StudentsController {
 		try {
 			// const { id } = req.id;
 			// console.log(id);
-			const student = await findStudentById(req.params.id);
+			const student = await findStudentById(req.id);
 			if (!student) {
 				return next(
 					new HttpException(
@@ -213,7 +213,7 @@ class StudentsController {
           const privateKey = fs.readFileSync(
             join(__dirname, '../../../keys/Private.key'),
           );
-          const token = jwt.sign(
+          const token = await jwt.sign(
             { id: student.id, phone_no: student.phone_no, department_id: student.department_init },
             privateKey,
             { algorithm: 'RS256' },
