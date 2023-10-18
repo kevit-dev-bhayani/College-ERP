@@ -17,9 +17,9 @@ class App {
 		this.app = express();
 		// const server = http.createServer(this.app);
 		this.app.listen(PORT, () => {
-			logger.info('Server is running on port', PORT);
+			logger.info('Server is running on port '+ PORT);
 		});
-		// this.config();
+		this.config();
 		this.mongoSetup();
 	}
 
@@ -43,9 +43,10 @@ class App {
 
 		// Register Routers.
 		ApplicationConfig.registerRoute(this.app);
+
 		this.app.use(express.static('public'));
 	}
-
+	
 	private mongoSetup(): void {
 		mongoose.connection.on('connected', () => {
 			logger.info('DATABASE-CONNECTED');
