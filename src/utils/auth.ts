@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import { join } from 'path';
 import jwt = require('jsonwebtoken');
+import { findStaffById } from '../components/staff/staff.DAL';
 import { findStudentById } from '../components/student/student.DAL';
 import HttpException from './error.utils';
 import USER_ERROR_CODES from './user.error';
@@ -14,7 +15,6 @@ import USER_ERROR_CODES from './user.error';
 // eslint-disable-next-line consistent-return
 export default async (req, res, next) => {
     // console.log(req.headers);
-	console.log("hii");
     const authToken=req.header('Authorization').replace('Bearer ','');
 	// const { authToken } = req.headers;
 
@@ -35,7 +35,10 @@ export default async (req, res, next) => {
 	);
 	try {
 		const { id, phone_no, role,department } = jwt.verify(authToken, privateKey);
-		const user = await findStudentById(id);
+		// if(role==='student'){
+			// }
+			// const user1 = await findStudentById(id);
+			const user=role==='student'?await findStudentById(id):await findStaffById(id);
 		if (user.authToken !== authToken) {
 			return next(
 				new HttpException(

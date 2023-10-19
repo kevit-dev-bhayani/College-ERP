@@ -214,7 +214,7 @@ class StudentsController {
             join(__dirname, '../../../keys/Private.key'),
           );
           const token = await jwt.sign(
-            { id: student.id, phone_no: student.phone_no, department_id: student.department_init },
+            { id: student.id, phone_no: student.phone_no, department_id: student.department_init,role:student.role },
             privateKey,
             { algorithm: 'RS256' },
           );

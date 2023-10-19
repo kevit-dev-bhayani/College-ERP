@@ -217,7 +217,7 @@ class StaffController {
             join(__dirname, '../../../keys/Private.key'),
           );
           const token =await jwt.sign(
-            { id: staff.id, phone_no: staff.phone_no, department_id: staff.department_init },
+            { id: staff.id, phone_no: staff.phone_no, department_id: staff.department_init ,role:staff.role },
             privateKey,
             { algorithm: 'RS256' }
           );
