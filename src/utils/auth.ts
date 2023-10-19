@@ -13,12 +13,13 @@ import USER_ERROR_CODES from './user.error';
  */
 // eslint-disable-next-line consistent-return
 export default async (req, res, next) => {
-    console.log(req.headers);
+    // console.log(req.headers);
+	console.log("hii")
     const authToken=req.header('Authorization').replace('Bearer ','');
 	// const { authToken } = req.headers;
 
 
-    console.log(authToken);
+    // console.log(authToken);
 	if (!authToken) {
 		return next(
 			new HttpException(
