@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import authorization from '../../utils/auth';
+import authentication from '../../utils/auth';
+import authorize from '../../utils/authorization';
 import StaffController from './staff.controller';
 
 class StaffRoute {
@@ -14,26 +15,28 @@ class StaffRoute {
 
 	initializeRoutes() {
 		// Sign Up
-		this.router.post('/signup', this.staffController.createStaff);
+		this.router.post('/signup',authentication,authorize(['admin']), this.staffController.createStaff);
 
 		// List Users
-		this.router.get('/', authorization,this.staffController.getStaff);
+		this.router.get('/', authentication,authorize(['admin']),this.staffController.getStaff);
         
-        //find User By Id
-		this.router.get('/me',authorization, this.staffController.findStaff);
+        //get self only
+		this.router.get('/me',authentication, authorize(['admin','staff']),this.staffController.findStaff);
 
 
 		// Update User
 		this.router.patch(
 			'/update/me',
-			authorization,
+			authorize(['admin']),
+			authentication,
 			this.staffController.updateStaff,
 		);
 
 		// Delete User
 		this.router.delete(
 			'/delete/me',
-			authorization,
+			authorize(['admin']),
+			authentication,
 			this.staffController.deleteStaff,
 		);
 
@@ -43,7 +46,7 @@ class StaffRoute {
 		// Logout User
 		this.router.put(
 			'/logout/me',
-			authorization,
+			authentication,
 			this.staffController.logoutStaff,
 		);
 	}

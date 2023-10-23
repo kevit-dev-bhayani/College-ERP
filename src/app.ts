@@ -44,7 +44,7 @@ class App {
 		// Register Routers.
 		ApplicationConfig.registerRoute(this.app);
 
-		this.app.use(express.static('public'));
+		// this.app.use(express.static('public'));
 	}
 	
 	private mongoSetup(): void {

@@ -1,6 +1,9 @@
 import { Router } from 'express';
-import authorization from '../../utils/auth';
+import authentication from '../../utils/auth';
+import authorize from '../../utils/authorization';
 import StudentController from './student.controller';
+
+//authentication;
 
 class StudentRoute {
 	public router: Router;
@@ -14,24 +17,26 @@ class StudentRoute {
 
 	initializeRoutes() {
 		// Sign Up
-		this.router.post('/signup', this.studentController.createStudents);
+		this.router.post('/signup',authentication,authorize(['admin','staff']) ,this.studentController.createStudents);
 
 		// List Users
-		this.router.get('/',authorization, this.studentController.getStudents);
+		this.router.get('/',authentication, authorize(['admin','staff']), this.studentController.getStudents);
         
-		this.router.get('/me',authorization, this.studentController.findStudent);
+		this.router.get('/me',authentication, this.studentController.findStudent);
 
 		// Update User
 		this.router.patch(
 			'/update/me',
-			authorization,
+			authentication,
+			authorize(['admin','staff']),
 			this.studentController.updateStudent,
 		);
 
 		// Delete User
 		this.router.delete(
 			'/delete/me',
-			authorization,
+			authentication,
+			authorize(['admin','staff']),
 			this.studentController.deleteStudent,
 		);
 
@@ -41,7 +46,7 @@ class StudentRoute {
 		// Logout User
 		this.router.put(
 			'/logout/me',
-			authorization,
+			authentication,
 			this.studentController.logoutStudent,
 		);
 	}

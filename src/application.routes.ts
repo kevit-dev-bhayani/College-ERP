@@ -13,6 +13,4 @@ export default class ApplicationConfig {
 		app.use('/staff',StaffRoutes);
 		// app.use('/user',UsersRoute);
 	}
-
-
 }
