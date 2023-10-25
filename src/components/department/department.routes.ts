@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import authentication from '../../utils/auth';
+import authorize from '../../utils/authorization';
 import DepartmentController from './department.controller';
 
 class DepartmentRoutes{
@@ -9,7 +11,6 @@ class DepartmentRoutes{
     constructor(){
         this.router=Router();
         this.initializeRoutes();
-        
     }
 
     initializeRoutes() {
@@ -21,11 +22,15 @@ class DepartmentRoutes{
 
         this.router.patch(
             '/update/:department_id',
+            authentication,
+            authorize(['admin']),
             this.deptController.updateDepartment,
         );
 
         this.router.post(
             '/create',
+            authentication,
+            authorize(['admin']),
             this.deptController.createDepartment,
         );
 
@@ -36,6 +41,8 @@ class DepartmentRoutes{
 
         this.router.delete(
             '/delete/:init',
+            authentication,
+            authorize(['admin']),
             this.deptController.DeleteDept,
         );
     }

@@ -34,7 +34,9 @@ export default async (req, res, next) => {
 		join(__dirname, '../../keys/Private.key'),
 	);
 	try {
-		const { id, phone_no, role,department } = jwt.verify(authToken, privateKey);
+		const { id, role } = jwt.verify(authToken, privateKey);
+		// console.log(obj);
+		// const { id, role } = obj;
 		// if(role==='student'){
 			// }
 			// const user1 = await findStudentById(id);
@@ -51,8 +53,6 @@ export default async (req, res, next) => {
 		}
 		req.id = id;
         req.role=role;
-		req.phone_no = phone_no;
-		req.department = department;
 		next();
 	} catch (error) {
 		return next(
