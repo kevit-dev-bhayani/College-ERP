@@ -15,14 +15,28 @@ class StaffRoute {
 
 	initializeRoutes() {
 		// Sign Up
-		this.router.post('/signup',authentication,authorize(['admin']), this.staffController.createStaff);
+		this.router.post(
+			'/signup',
+			authentication,
+			authorize(['admin']),
+			this.staffController.createStaff,
+		);
 
 		// List Users
-		this.router.get('/', authentication,authorize(['admin']),this.staffController.getStaff);
-        
-        //get self only
-		this.router.get('/me',authentication, authorize(['admin','staff']),this.staffController.findStaff);
+		this.router.get(
+			'/',
+			authentication,
+			authorize(['admin']),
+			this.staffController.getStaff,
+		);
 
+		//get self only
+		this.router.get(
+			'/me',
+			authentication,
+			authorize(['admin', 'staff']),
+			this.staffController.findStaff,
+		);
 
 		// Update User
 		this.router.patch(

@@ -6,20 +6,17 @@ import bcrypt = require('bcrypt');
 import jwt = require('jsonwebtoken');
 import HttpException from '../../utils/error.utils';
 import USER_ERROR_CODES from '../../utils/user.error';
-import {
-	findDepartmentByInitialize,
-} from '../department/department.DAL';
+import { findDepartmentByInitialize } from '../department/department.DAL';
 import {
 	createNewStaff,
-	findStaffs ,
-	findStaffById ,
+	findStaffs,
+	findStaffById,
 	// findStaffByDepartmentInit,
 	findStaffByPhoneNo,
 	deleteStaffById,
 	// findStaff ByDepartmentId,
 } from './staff.DAL';
 // import { request } from 'http';
-
 
 class StaffController {
 	/**
@@ -32,7 +29,8 @@ class StaffController {
 		try {
 			const staffObject = req.body;
 			const { department_init } = req.body;
-			const department = await findDepartmentByInitialize(department_init);
+			const department =
+				await findDepartmentByInitialize(department_init);
 			if (!department) {
 				throw new Error('plz enter valid department_init');
 			} else {
@@ -53,7 +51,7 @@ class StaffController {
 	 */
 	async getStaff(req, res, next) {
 		try {
-			const staffs = await findStaffs ();
+			const staffs = await findStaffs();
 			return res.status(200).send({ data: staffs });
 		} catch (err) {
 			return next(err);
@@ -67,27 +65,27 @@ class StaffController {
 	 */
 	async findStaff(req, res, next) {
 		try {
-			const staff = await findStaffById (req.id);
+			const staff = await findStaffById(req.id);
 			// console.log(staff);
-            if(staff){
-                return res.status(200).send({ data: staff });
-            }
-            throw new Error('Id not found');
+			if (staff) {
+				return res.status(200).send({ data: staff });
+			}
+			throw new Error('Id not found');
 		} catch (err) {
 			return next(err);
 		}
 	}
 
-  /**
-   * Updates Logged-in Student
-   * @param {Request} req => Express Request
-   * @param {Response} res => Express Response
-   * @param {NextFunction} next => Express next function
-   */
+	/**
+	 * Updates Logged-in Student
+	 * @param {Request} req => Express Request
+	 * @param {Response} res => Express Response
+	 * @param {NextFunction} next => Express next function
+	 */
 	async updateStaff(req, res, next) {
 		try {
 			// const { id } = req.id;
-			const staff = await findStaffById (req.id);
+			const staff = await findStaffById(req.id);
 			if (!staff) {
 				return next(
 					new HttpException(
@@ -102,7 +100,9 @@ class StaffController {
 			for (const field in req.body) {
 				if (field === 'department_init') {
 					// eslint-disable-next-line no-await-in-loop
-					const staffDept = await findDepartmentByInitialize(staff.department_init);
+					const staffDept = await findDepartmentByInitialize(
+						staff.department_init,
+					);
 					if (staffDept.initialize !== req.body[field]) {
 						// eslint-disable-next-line no-await-in-loop
 						const department = await findDepartmentByInitialize(
@@ -126,16 +126,16 @@ class StaffController {
 		}
 	}
 
-  /**
-   * Deletes Staff
-   * @param {Request} req => Express Request
-   * @param {Response} res => Express Response
-   * @param {NextFunction} next => Express next function
-   */
+	/**
+	 * Deletes Staff
+	 * @param {Request} req => Express Request
+	 * @param {Response} res => Express Response
+	 * @param {NextFunction} next => Express next function
+	 */
 	async deleteStaff(req, res, next) {
 		try {
 			// const { id } = req.id;
-			const staff = await findStaffById (req.id);
+			const staff = await findStaffById(req.id);
 			if (!staff) {
 				return next(
 					new HttpException(
@@ -158,17 +158,17 @@ class StaffController {
 		}
 	}
 
-  /**
-   * Logs Out Staff
-   * @param {Request} req => Express Request
-   * @param {Response} res => Express Response
-   * @param {NextFunction} next => Express next function
-   */
+	/**
+	 * Logs Out Staff
+	 * @param {Request} req => Express Request
+	 * @param {Response} res => Express Response
+	 * @param {NextFunction} next => Express next function
+	 */
 	async logoutStaff(req, res, next) {
 		try {
 			// const { id } = req.id;
 			// console.log(id);
-			const staff = await findStaffById (req.id);
+			const staff = await findStaffById(req.id);
 			if (!staff) {
 				return next(
 					new HttpException(
@@ -187,61 +187,65 @@ class StaffController {
 		}
 	}
 
-  /**
-   * Allows Staff to Login
-   * @param {Request} req => Express Request
-   * @param {Response} res => Express Response
-   * @param {NextFunction} next => Express next function
-   */
+	/**
+	 * Allows Staff to Login
+	 * @param {Request} req => Express Request
+	 * @param {Response} res => Express Response
+	 * @param {NextFunction} next => Express next function
+	 */
 	async loginStaff(req, res, next) {
 		try {
 			const { phone_no, password } = req.body;
-      if(!phone_no || !password) {
-        return next(
-          new HttpException(
-            400,
-            USER_ERROR_CODES.PHONE_NO_OR_PASSWORD_NOT_FOUND,
-            'PHONE_NO_OR_PASSWORD_NOT_FOUND',
-            null,
-          ),
-        );
+			if (!phone_no || !password) {
+				return next(
+					new HttpException(
+						400,
+						USER_ERROR_CODES.PHONE_NO_OR_PASSWORD_NOT_FOUND,
+						'PHONE_NO_OR_PASSWORD_NOT_FOUND',
+						null,
+					),
+				);
+			}
 
-      }
-	
 			const staff = await findStaffByPhoneNo(phone_no);
-			
-      if(staff) {
-        const match = await bcrypt.compare(password, staff.password);
-        if (match) {
-          const privateKey = fs.readFileSync(
-            join(__dirname, '../../../keys/Private.key'),
-          );
-          const token =await jwt.sign(
-            { id: staff.id, phone_no: staff.phone_no, department_id: staff.department_init ,role:staff.role },
-            privateKey,
-            { algorithm: 'RS256' }
-          );
-          staff.authToken = token;
-          await staff.save();
-          return res.status(200).send({ authToken: token });
-        }
-        return next(
-          new HttpException(
-            401,
-            USER_ERROR_CODES.UNAUTHENTICATED,
-            'UNAUTHENTICATED',
-            null,
-          ),
-        );
-      }
-      return next(
-        new HttpException(
-          401,
-          USER_ERROR_CODES.USER_NOT_FOUND,
-          'STUDENT_NOT_FOUND',
-          null,
-        ),
-      );
+
+			if (staff) {
+				const match = await bcrypt.compare(password, staff.password);
+				if (match) {
+					const privateKey = fs.readFileSync(
+						join(__dirname, '../../../keys/Private.key'),
+					);
+					const token = await jwt.sign(
+						{
+							id: staff.id,
+							phone_no: staff.phone_no,
+							department_id: staff.department_init,
+							role: staff.role,
+						},
+						privateKey,
+						{ algorithm: 'RS256' },
+					);
+					staff.authToken = token;
+					await staff.save();
+					return res.status(200).send({ authToken: token });
+				}
+				return next(
+					new HttpException(
+						401,
+						USER_ERROR_CODES.UNAUTHENTICATED,
+						'UNAUTHENTICATED',
+						null,
+					),
+				);
+			}
+			return next(
+				new HttpException(
+					401,
+					USER_ERROR_CODES.USER_NOT_FOUND,
+					'STUDENT_NOT_FOUND',
+					null,
+				),
+			);
 		} catch (err) {
 			return next(err);
 		}

@@ -7,10 +7,10 @@ const { Schema, model } = mongoose;
  * User Schema for DB
  */
 const studentSchema = new Schema({
-    role:{
-        type: Schema.Types.String,
+	role: {
+		type: Schema.Types.String,
 		required: true,
-    },
+	},
 	name: {
 		type: Schema.Types.String,
 		required: true,
@@ -24,34 +24,32 @@ const studentSchema = new Schema({
 		type: Schema.Types.String,
 		required: true,
 	},
-	
+
 	department_init: {
 		type: Schema.Types.String,
 		required: true,
 	},
-    sem:{
-        type:Schema.Types.Number,
-        require:true
-    },
-    batch:{
-        type:Schema.Types.Number,
-        required:true
-    },
-    authToken: {
+	sem: {
+		type: Schema.Types.Number,
+		require: true,
+	},
+	batch: {
+		type: Schema.Types.Number,
+		required: true,
+	},
+	authToken: {
 		type: Schema.Types.String,
 	},
 });
 // eslint-disable-next-line func-names
 studentSchema.pre('save', async function (next) {
 	try {
+		const roles = ['student'];
 
-		const roles=['student'];
-
-		if(this.isModified('role')){
-			this.role=this.role.toLowerCase();
-			if(!roles.includes(this.role)){
+		if (this.isModified('role')) {
+			this.role = this.role.toLowerCase();
+			if (!roles.includes(this.role)) {
 				throw new Error('Please enter valid role');
-				
 			}
 		}
 

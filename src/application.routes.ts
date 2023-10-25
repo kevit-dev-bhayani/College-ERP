@@ -7,10 +7,10 @@ import IndexRoute from './index';
 
 export default class ApplicationConfig {
 	public static registerRoute(app: Application) {
-		app.use('/',IndexRoute);
-		app.use('/dept',departmentRoutes);
-		app.use('/student',studentRoutes);
-		app.use('/staff',StaffRoutes);
+		app.use('/', IndexRoute);
+		app.use('/dept', departmentRoutes);
+		app.use('/student', studentRoutes);
+		app.use('/staff', StaffRoutes);
 		// app.use('/user',UsersRoute);
 	}
 }

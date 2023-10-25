@@ -7,10 +7,10 @@ const { Schema, model } = mongoose;
  * User Schema for DB
  */
 const staffSchema = new Schema({
-    role:{
-        type: Schema.Types.String,
+	role: {
+		type: Schema.Types.String,
 		required: true,
-    },
+	},
 	name: {
 		type: Schema.Types.String,
 		required: true,
@@ -24,26 +24,24 @@ const staffSchema = new Schema({
 		type: Schema.Types.String,
 		required: true,
 	},
-	
+
 	department_init: {
 		type: Schema.Types.String,
 		required: true,
 	},
-    authToken: {
+	authToken: {
 		type: Schema.Types.String,
 	},
 });
 // eslint-disable-next-line func-names
 staffSchema.pre('save', async function (next) {
 	try {
+		const roles = ['staff'];
 
-		const roles=['staff'];
-
-		if(this.isModified('role')){
-			this.role=this.role.toLowerCase();
-			if(!roles.includes(this.role)){
+		if (this.isModified('role')) {
+			this.role = this.role.toLowerCase();
+			if (!roles.includes(this.role)) {
 				throw new Error('Please enter valid role');
-				
 			}
 		}
 

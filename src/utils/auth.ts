@@ -14,12 +14,11 @@ import USER_ERROR_CODES from './user.error';
  */
 // eslint-disable-next-line consistent-return
 export default async (req, res, next) => {
-    // console.log(req.headers);
-    const authToken=req.header('Authorization').replace('Bearer ','');
+	// console.log(req.headers);
+	const authToken = req.header('Authorization').replace('Bearer ', '');
 	// const { authToken } = req.headers;
 
-
-    // console.log(authToken);
+	// console.log(authToken);
 	if (!authToken) {
 		return next(
 			new HttpException(
@@ -38,9 +37,12 @@ export default async (req, res, next) => {
 		// console.log(obj);
 		// const { id, role } = obj;
 		// if(role==='student'){
-			// }
-			// const user1 = await findStudentById(id);
-			const user=role==='student'?await findStudentById(id):await findStaffById(id);
+		// }
+		// const user1 = await findStudentById(id);
+		const user =
+			role === 'student'
+				? await findStudentById(id)
+				: await findStaffById(id);
 		if (user.authToken !== authToken) {
 			return next(
 				new HttpException(
@@ -52,7 +54,7 @@ export default async (req, res, next) => {
 			);
 		}
 		req.id = id;
-        req.role=role;
+		req.role = role;
 		next();
 	} catch (error) {
 		return next(

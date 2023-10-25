@@ -57,9 +57,9 @@ export async function findStaffByDepartmentInit(initialize) {
  * Find Student by email from DB
  * @param email_id => Email of the user
  */
-export async function findStaffByPhoneNo(phone_no:number) {
+export async function findStaffByPhoneNo(phone_no: number) {
 	try {
-		return await Staff.findOne({ phone_no:phone_no });         
+		return await Staff.findOne({ phone_no: phone_no });
 	} catch (err) {
 		throw new HttpException(
 			500,

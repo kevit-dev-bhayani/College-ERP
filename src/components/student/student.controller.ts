@@ -6,9 +6,7 @@ import bcrypt = require('bcrypt');
 import jwt = require('jsonwebtoken');
 import HttpException from '../../utils/error.utils';
 import USER_ERROR_CODES from '../../utils/user.error';
-import {
-	findDepartmentByInitialize,
-} from '../department/department.DAL';
+import { findDepartmentByInitialize } from '../department/department.DAL';
 import {
 	createNewStudent,
 	findStudents,
@@ -18,7 +16,6 @@ import {
 	deleteStudentById,
 	// findStudentsByDepartmentId,
 } from './student.DAL';
-
 
 class StudentsController {
 	/**
@@ -31,7 +28,8 @@ class StudentsController {
 		try {
 			const studentObject = req.body;
 			const { department_init } = req.body;
-			const department = await findDepartmentByInitialize(department_init);
+			const department =
+				await findDepartmentByInitialize(department_init);
 			if (!department) {
 				throw new Error('plz enter valid department_init');
 			} else {
@@ -67,21 +65,21 @@ class StudentsController {
 	async findStudent(req, res, next) {
 		try {
 			const student = await findStudentById(req.id);
-            if(student){
-                return res.status(200).send({ data: student });
-            }
-            throw new Error('Id not found');
+			if (student) {
+				return res.status(200).send({ data: student });
+			}
+			throw new Error('Id not found');
 		} catch (err) {
 			return next(err);
 		}
 	}
 
-  /**
-   * Updates Logged-in Student
-   * @param {Request} req => Express Request
-   * @param {Response} res => Express Response
-   * @param {NextFunction} next => Express next function
-   */
+	/**
+	 * Updates Logged-in Student
+	 * @param {Request} req => Express Request
+	 * @param {Response} res => Express Response
+	 * @param {NextFunction} next => Express next function
+	 */
 	async updateStudent(req, res, next) {
 		try {
 			// const { id } = req.id;
@@ -100,7 +98,9 @@ class StudentsController {
 			for (const field in req.body) {
 				if (field === 'department_init') {
 					// eslint-disable-next-line no-await-in-loop
-					const studentDept = await findDepartmentByInitialize(student.department_init);
+					const studentDept = await findDepartmentByInitialize(
+						student.department_init,
+					);
 					if (studentDept.initialize !== req.body[field]) {
 						// eslint-disable-next-line no-await-in-loop
 						const department = await findDepartmentByInitialize(
@@ -124,12 +124,12 @@ class StudentsController {
 		}
 	}
 
-  /**
-   * Deletes Student
-   * @param {Request} req => Express Request
-   * @param {Response} res => Express Response
-   * @param {NextFunction} next => Express next function
-   */
+	/**
+	 * Deletes Student
+	 * @param {Request} req => Express Request
+	 * @param {Response} res => Express Response
+	 * @param {NextFunction} next => Express next function
+	 */
 	async deleteStudent(req, res, next) {
 		try {
 			// const { id } = req.id;
@@ -156,12 +156,12 @@ class StudentsController {
 		}
 	}
 
-  /**
-   * Logs Out Student
-   * @param {Request} req => Express Request
-   * @param {Response} res => Express Response
-   * @param {NextFunction} next => Express next function
-   */
+	/**
+	 * Logs Out Student
+	 * @param {Request} req => Express Request
+	 * @param {Response} res => Express Response
+	 * @param {NextFunction} next => Express next function
+	 */
 	async logoutStudent(req, res, next) {
 		try {
 			// const { id } = req.id;
@@ -185,60 +185,63 @@ class StudentsController {
 		}
 	}
 
-  /**
-   * Allows Student to Login
-   * @param {Request} req => Express Request
-   * @param {Response} res => Express Response
-   * @param {NextFunction} next => Express next function
-   */
+	/**
+	 * Allows Student to Login
+	 * @param {Request} req => Express Request
+	 * @param {Response} res => Express Response
+	 * @param {NextFunction} next => Express next function
+	 */
 	async loginStudent(req, res, next) {
 		try {
 			const { phone_no, password } = req.body;
-      if(!phone_no || !password) {
-        return next(
-          new HttpException(
-            400,
-            USER_ERROR_CODES.PHONE_NO_OR_PASSWORD_NOT_FOUND,
-            'PHONE_NO_OR_PASSWORD_NOT_FOUND',
-            null,
-          ),
-        );
-
-      }
+			if (!phone_no || !password) {
+				return next(
+					new HttpException(
+						400,
+						USER_ERROR_CODES.PHONE_NO_OR_PASSWORD_NOT_FOUND,
+						'PHONE_NO_OR_PASSWORD_NOT_FOUND',
+						null,
+					),
+				);
+			}
 			const student = await findStudentByPhoneNo(phone_no);
-      if(student) {
-		
-        const match = await bcrypt.compare(password, student.password);
-        if (match) {
-          const privateKey = fs.readFileSync(
-            join(__dirname, '../../../keys/Private.key'),
-          );
-          const token = await jwt.sign(
-            { id: student.id, phone_no: student.phone_no, department_id: student.department_init,role:student.role },
-            privateKey,
-            { algorithm: 'RS256' },
-          );
-          student.authToken = token;
-          await student.save();
-          return res.status(200).send({ authToken: token });
-        }
-        return next(
-          new HttpException(
-            401,
-            USER_ERROR_CODES.UNAUTHENTICATED,
-            'UNAUTHENTICATED',
-            null,
-          ),
-        );
-      }
-      return next(
-        new HttpException(
-          401,
-          USER_ERROR_CODES.USER_NOT_FOUND,
-          'STUDENT_NOT_FOUND',
-          null,
-        ),
-      );
+			if (student) {
+				const match = await bcrypt.compare(password, student.password);
+				if (match) {
+					const privateKey = fs.readFileSync(
+						join(__dirname, '../../../keys/Private.key'),
+					);
+					const token = await jwt.sign(
+						{
+							id: student.id,
+							phone_no: student.phone_no,
+							department_id: student.department_init,
+							role: student.role,
+						},
+						privateKey,
+						{ algorithm: 'RS256' },
+					);
+					student.authToken = token;
+					await student.save();
+					return res.status(200).send({ authToken: token });
+				}
+				return next(
+					new HttpException(
+						401,
+						USER_ERROR_CODES.UNAUTHENTICATED,
+						'UNAUTHENTICATED',
+						null,
+					),
+				);
+			}
+			return next(
+				new HttpException(
+					401,
+					USER_ERROR_CODES.USER_NOT_FOUND,
+					'STUDENT_NOT_FOUND',
+					null,
+				),
+			);
 		} catch (err) {
 			return next(err);
 		}

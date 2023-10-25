@@ -17,18 +17,32 @@ class StudentRoute {
 
 	initializeRoutes() {
 		// Sign Up
-		this.router.post('/signup',authentication,authorize(['admin','staff']) ,this.studentController.createStudents);
+		this.router.post(
+			'/signup',
+			authentication,
+			authorize(['admin', 'staff']),
+			this.studentController.createStudents,
+		);
 
 		// List Users
-		this.router.get('/',authentication, authorize(['admin','staff']), this.studentController.getStudents);
-        
-		this.router.get('/me',authentication, this.studentController.findStudent);
+		this.router.get(
+			'/',
+			authentication,
+			authorize(['admin', 'staff']),
+			this.studentController.getStudents,
+		);
+
+		this.router.get(
+			'/me',
+			authentication,
+			this.studentController.findStudent,
+		);
 
 		// Update User
 		this.router.patch(
 			'/update/me',
 			authentication,
-			authorize(['admin','staff']),
+			authorize(['admin', 'staff']),
 			this.studentController.updateStudent,
 		);
 
@@ -36,7 +50,7 @@ class StudentRoute {
 		this.router.delete(
 			'/delete/me',
 			authentication,
-			authorize(['admin','staff']),
+			authorize(['admin', 'staff']),
 			this.studentController.deleteStudent,
 		);
 
